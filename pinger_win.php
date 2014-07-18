@@ -15,12 +15,12 @@ function pingTarget($target,$timeout=2000)
 
 	$fp = fopen($filename, 'a');
 
-	if($arr[0]!='Antwort')
-		echo "[X] Error!\n";
+	if($arr[0]!='Antwort' && trim($arr[2])!= 'Anforderung.')
+		echo "[X] Error1!\n".print_r($arr,true)."\n";
 	else
 	{
 		$rt = 0;
-		if($arr[3]=='Zielhost')
+		if($arr[3]=='Zielhost' || trim($arr[2])=='Anforderung.')
 			$rt = $timeout;
 		else if($arr[4]=='Zeit<1ms')
 			$rt = 1;
@@ -33,14 +33,23 @@ function pingTarget($target,$timeout=2000)
 		{
 			if(substr($rt,-2)=='ms')
 				$rt = substr($rt, 0, -2);
-			echo "[+] Target answered in $rt ms\n";
-			if(!$newfile)
-				fwrite($fp, ',');
-			fwrite($fp, '['.(time()*1000).','.$rt.']');
+			if($GLOBALS['last']!=$rt || $rt==$timeout)
+			{
+				echo "[+] Target answered in $rt ms\n";
+				if(!$newfile)
+					fwrite($fp, ',');
+				fwrite($fp, '['.(time()*1000).','.$rt.']');
+			}
+			else
+			{
+				echo '.';
+			}
+			$GLOBALS['last'] = $rt;
+			
 
 		}
 		else
-			echo "[X] Error!\n".print_r($arr,true)."\n";
+			echo "[X] Error2!\n".print_r($arr,true)."\n";
 	}
 
 	fclose($fp);
