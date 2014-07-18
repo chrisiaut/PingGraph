@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Ping graph</title>
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.9.1.js'></script>
+  
+  
+    
+  <style type='text/css'>
+    
+  </style>
+  
+
+<script type='text/javascript'>//<![CDATA[ 
+
+$(function () {
+    $.get( "data_192.168.1.115.txt", function( data ) {
+        data = eval('['+data+']');
+        render(data);
+    });
+
+function render(data)
+{
+    $('#container').highcharts({
+        chart: {
+            type: 'scatter',
+            zoomType: 'xy'
+        },
+        title: {
+            text: 'Response time'
+        },
+        xAxis: {
+            type: 'datetime',
+            title: {
+                enabled: true,
+                text: 'Time'
+            },
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
+        },
+        yAxis: {
+            title: {
+                text: 'Responsetime in ms'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+            borderWidth: 1
+        },
+        tooltip: {
+                    formatter: function() {
+                        return  '<b>' + this.series.name +'</b><br/>' +
+                            Highcharts.dateFormat('%e.%b.%Y %H:%M', new Date(this.x))+ ': <strong>' + this.y + ' ms</strong>';
+                    }
+                },
+        plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                }
+                
+            }
+        },
+        series: [{
+            name: 'Pings',
+            color: 'rgba(223, 83, 83, .5)',
+            data: data
+
+        }]
+    });
+}
+});
+
+
+//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
+
+  
+</body>
+
+
+</html>
+
